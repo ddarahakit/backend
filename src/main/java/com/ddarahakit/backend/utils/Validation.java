@@ -1,4 +1,4 @@
-package com.example.backend.utils;
+package com.ddarahakit.backend.utils;
 
 public class Validation {
      public static boolean isValidatedIdx(Integer idx) {

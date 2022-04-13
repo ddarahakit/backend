@@ -1,8 +1,8 @@
-package com.example.backend.course;
+package com.ddarahakit.backend.course;
 
-import com.example.backend.course.model.GetCourseRes;
-import com.example.backend.course.model.PostCourseReq;
-import com.example.backend.course.model.PostCourseRes;
+import com.ddarahakit.backend.course.model.GetCourseRes;
+import com.ddarahakit.backend.course.model.PostCourseReq;
+import com.ddarahakit.backend.course.model.PostCourseRes;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;

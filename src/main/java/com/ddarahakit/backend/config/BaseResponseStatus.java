@@ -1,4 +1,4 @@
-package com.example.backend.config;
+package com.ddarahakit.backend.config;
 
 
 import lombok.Getter;

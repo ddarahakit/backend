@@ -1,22 +1,22 @@
-package com.example.backend.course;
+package com.ddarahakit.backend.course;
 
-import com.example.backend.config.BaseException;
-import com.example.backend.course.model.GetCourseRes;
-import com.example.backend.course.model.PostCourseReq;
-import com.example.backend.course.model.PostCourseRes;
+import com.ddarahakit.backend.config.BaseException;
+import com.ddarahakit.backend.course.model.GetCourseRes;
+import com.ddarahakit.backend.course.model.PostCourseReq;
+import com.ddarahakit.backend.course.model.PostCourseRes;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
-import static com.example.backend.config.BaseResponseStatus.POST_COURSES_EMPTY_NAME;
-import static com.example.backend.config.BaseResponseStatus.POST_COURSES_EMPTY_PRICE;
-import static com.example.backend.config.BaseResponseStatus.POST_COURSES_EMPTY_DESCRIPTION;
-import static com.example.backend.config.BaseResponseStatus.POST_COURSES_EMPTY_DETAIL;
-import static com.example.backend.config.BaseResponseStatus.POST_COURSES_EMPTY_DISCOUNT;
-import static com.example.backend.config.BaseResponseStatus.POST_COURSES_EMPTY_CATEGORY_IDX;
-import static com.example.backend.config.BaseResponseStatus.GET_COURSES_EMPTY_IDX;
-import static com.example.backend.config.BaseResponseStatus.GET_COURSES_INVALID_IDX;
+import static com.ddarahakit.backend.config.BaseResponseStatus.POST_COURSES_EMPTY_NAME;
+import static com.ddarahakit.backend.config.BaseResponseStatus.POST_COURSES_EMPTY_PRICE;
+import static com.ddarahakit.backend.config.BaseResponseStatus.POST_COURSES_EMPTY_DESCRIPTION;
+import static com.ddarahakit.backend.config.BaseResponseStatus.POST_COURSES_EMPTY_DETAIL;
+import static com.ddarahakit.backend.config.BaseResponseStatus.POST_COURSES_EMPTY_DISCOUNT;
+import static com.ddarahakit.backend.config.BaseResponseStatus.POST_COURSES_EMPTY_CATEGORY_IDX;
+import static com.ddarahakit.backend.config.BaseResponseStatus.GET_COURSES_EMPTY_IDX;
+import static com.ddarahakit.backend.config.BaseResponseStatus.GET_COURSES_INVALID_IDX;
 
-import static com.example.backend.utils.Validation.*;
+import static com.ddarahakit.backend.utils.Validation.*;
 
 
 @RestController
