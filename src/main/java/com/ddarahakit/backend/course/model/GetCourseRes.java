@@ -14,7 +14,6 @@ public class GetCourseRes {
     private String name;
     private Integer price;
     private String description;
-    private String detail;
     private Integer discount;
     private Integer category_idx;
     private Timestamp create_timestamp;

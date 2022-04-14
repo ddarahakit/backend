@@ -23,17 +23,5 @@ public class CourseProvider {
         return false;
     }
 
-    public GetCourseRes getCourse(Integer idx) throws BaseException {
-        if (courseDao.isNotExistedCourse(idx)) {
-            throw new BaseException(RESPONSE_NULL_ERROR_BY_IDX);
-        }
 
-        try {
-            GetCourseRes getCourseRes = courseDao.getCourse(idx);
-
-            return getCourseRes;
-        } catch (Exception exception) {
-            throw new BaseException(DATABASE_ERROR);
-        }
-    }
 }

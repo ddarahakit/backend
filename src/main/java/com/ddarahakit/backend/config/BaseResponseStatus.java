@@ -30,14 +30,17 @@ public enum BaseResponseStatus {
     POST_COURSES_EMPTY_NAME(false,2100,"코스 이름을 입력해주세요."),
     POST_COURSES_EMPTY_PRICE(false,2101,"코스 가격을 입력해주세요."),
     POST_COURSES_EMPTY_DESCRIPTION(false,2102,"코스 설명을 입력해주세요."),
-    POST_COURSES_EMPTY_DETAIL(false,2103,"코스 상세 내용을 입력해주세요."),
-    POST_COURSES_EMPTY_DISCOUNT(false,2104,"할인 비율을 입력해주세요."),
-    POST_COURSES_EMPTY_CATEGORY_IDX(false,2105,"카테고리 IDX를 입력해주세요."),
-    POST_COURSES_PRE_EXIST_COURSE(false,2106,"이미 존재하는 코스의 이름이 입력되었습니다."),
+    POST_COURSES_EMPTY_DISCOUNT(false,2103,"할인 비율을 입력해주세요."),
+    POST_COURSES_EMPTY_CATEGORY_IDX(false,2104,"카테고리 IDX를 입력해주세요."),
+    POST_COURSES_PRE_EXIST_COURSE(false,2105,"이미 존재하는 코스의 이름이 입력되었습니다."),
 
     // [GET] /course/{idx}
     GET_COURSES_EMPTY_IDX(false,2200,"코스 IDX 값을 입력해주세요."),
     GET_COURSES_INVALID_IDX(false,2201,"잘못된 코스 IDX 값입니다."),
+
+    // [POST] /course/upload
+    POST_COURSES_EMPTY_IMAGE(false,2200,"이미지를 첨부해주세요."),
+    POST_COURSES_INVALID_IMAGE(false,2201,"이미지 파일이 아닙니다."),
 
     /**
      * 3000 : Response 오류

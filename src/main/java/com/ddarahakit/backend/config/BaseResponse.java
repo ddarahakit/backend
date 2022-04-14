@@ -1,4 +1,4 @@
-package com.ddarahakit.backend.course;
+package com.ddarahakit.backend.config;
 
 
 import com.ddarahakit.backend.config.BaseResponseStatus;
