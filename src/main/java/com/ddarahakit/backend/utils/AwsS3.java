@@ -57,14 +57,16 @@ public class AwsS3 {
         //실제 파일 이름 IE나 Edge는 전체 경로가 들어오므로
         String originalName = multipartFile.getOriginalFilename();
         String fileName = originalName.substring(originalName.lastIndexOf("\\") + 1);
+        String uuid = UUID.randomUUID().toString();
+        String folderPath = LocalDate.now().format(DateTimeFormatter.ofPattern("yyyy/MM/dd/"));
+        String saveName = folderPath + File.separator + uuid +"_" + fileName;
 
-        //오늘 날짜로 폴더명 지정
-        String today = LocalDate.now().format(DateTimeFormatter.ofPattern("yyyy/MM/dd/"));
+
 
         //요청 생성
         PutObjectRequest putObjectRequest = PutObjectRequest.builder()
                 .bucket(bucket)
-                .key(today+fileName)
+                .key(saveName)
                 //.acl("public-read")
                 .contentType("image/*")
                 .build();
@@ -83,6 +85,6 @@ public class AwsS3 {
 
         System.out.println("끝 - 요청 보내기 성공");
 
-        return "https://ddarahakit-s3.s3.ap-northeast-2.amazonaws.com/"+today+fileName;
+        return "https://ddarahakit-s3.s3.ap-northeast-2.amazonaws.com/"+saveName;
     }
 }
