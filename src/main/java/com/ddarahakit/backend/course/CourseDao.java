@@ -1,9 +1,6 @@
 package com.ddarahakit.backend.course;
 
-import com.ddarahakit.backend.course.model.GetCourseRes;
-import com.ddarahakit.backend.course.model.GetCourseWithImageRes;
-import com.ddarahakit.backend.course.model.PostCourseReq;
-import com.ddarahakit.backend.course.model.PostCourseRes;
+import com.ddarahakit.backend.course.model.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
@@ -124,5 +121,54 @@ public class CourseDao {
                         rs.getString("imageurl"),
                         rs.getTimestamp("create_timestamp"),
                         rs.getTimestamp("update_timestamp")));
+    }
+
+
+    public PostCourseDetailRes createCourseDetail(PostCourseDetailReq postCourseDetailReq) {
+        String createCourseDetailQuery = "insert into coursedetail (detail, course_idx) VALUES (?, ?)";
+        Object[] createCourseDetailParams = new Object[] { postCourseDetailReq.getDetail(), postCourseDetailReq.getCourse_idx()};
+
+        this.jdbcTemplate.update(createCourseDetailQuery, createCourseDetailParams);
+
+        String getLastInsertIdxQuery = "select last_insert_id()";
+
+        Integer lastInsertIdx = this.jdbcTemplate.queryForObject(getLastInsertIdxQuery, Integer.class);
+
+        return new PostCourseDetailRes(lastInsertIdx, 1);
+    }
+
+    public PostCourseDetailRes createCourseDetailImage(String imageUrl, Integer coursedetail_idx) {
+        String createCourseDetailQuery = "insert into coursedetailimage (imageurl, coursedetail_idx) VALUES (?, ?)";
+        Object[] createCourseDetailParams = new Object[] { imageUrl, coursedetail_idx};
+
+        this.jdbcTemplate.update(createCourseDetailQuery, createCourseDetailParams);
+
+        String getLastInsertIdxQuery = "select last_insert_id()";
+
+        Integer lastInsertIdx = this.jdbcTemplate.queryForObject(getLastInsertIdxQuery, Integer.class);
+
+        return new PostCourseDetailRes(lastInsertIdx, 1);
+    }
+
+    public GetCourseWithImageAndDetailRes getCourseWithImageAndDetail(Integer idx) {
+        String getCourseQuery = "select * from course " +
+                "left outer join courseimage on course.idx=courseimage.course_idx " +
+                "left outer join coursedetail on coursedetail.course_idx=course.idx " +
+                "left outer join coursedetailimage on coursedetailimage.coursedetail_idx=coursedetail.idx " +
+                "where course.idx = ?";
+
+        return this.jdbcTemplate.queryForObject(getCourseQuery
+                , (rs,rowNum) -> new GetCourseWithImageAndDetailRes(
+                        rs.getInt("idx"),
+                        rs.getString("name"),
+                        rs.getInt("price"),
+                        rs.getString("description"),
+                        rs.getInt("discount"),
+                        rs.getInt("category_idx"),
+                        rs.getString(10),
+                        rs.getString("detail"),
+                        rs.getString(20),
+                        rs.getTimestamp("create_timestamp"),
+                        rs.getTimestamp("update_timestamp")), idx);
     }
 }

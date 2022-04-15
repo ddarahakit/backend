@@ -1,10 +1,7 @@
 package com.ddarahakit.backend.course;
 
 import com.ddarahakit.backend.config.BaseException;
-import com.ddarahakit.backend.course.model.GetCourseRes;
-import com.ddarahakit.backend.course.model.GetCourseWithImageRes;
-import com.ddarahakit.backend.course.model.PostCourseReq;
-import com.ddarahakit.backend.course.model.PostCourseRes;
+import com.ddarahakit.backend.course.model.*;
 import com.ddarahakit.backend.utils.AwsS3;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -82,8 +79,6 @@ public class CourseService {
         } catch (Exception exception) {
             throw new BaseException(DATABASE_ERROR);
         }
-
-
     }
 
     public GetCourseWithImageRes getCourseWithImage(Integer idx) throws BaseException {
@@ -108,6 +103,32 @@ public class CourseService {
             return getCourseWithImageResList;
         } catch (Exception exception) {
             System.out.println(exception);
+            throw new BaseException(DATABASE_ERROR);
+        }
+    }
+
+
+    public PostCourseDetailRes createCourseDetailWithImage(PostCourseDetailReq postCourseDetailReq, MultipartFile multipartFile) throws BaseException {
+        try {
+            PostCourseDetailRes postCourseDetailRes1 = courseDao.createCourseDetail(postCourseDetailReq);
+            String imageUrl = awsS3.upload(multipartFile);
+            PostCourseDetailRes postCourseDetailRes2 = courseDao.createCourseDetailImage(imageUrl, postCourseDetailRes1.getIdx());
+            return postCourseDetailRes2;
+        } catch (Exception exception) {
+            throw new BaseException(DATABASE_ERROR);
+        }
+    }
+
+    public GetCourseWithImageAndDetailRes getCourseWithImageAndDetail(Integer idx) throws BaseException {
+        if (courseDao.isNotExistedCourse(idx)) {
+            throw new BaseException(RESPONSE_NULL_ERROR_BY_IDX);
+        }
+
+        try {
+            GetCourseWithImageAndDetailRes getCourseWithImageAndDetailRes = courseDao.getCourseWithImageAndDetail(idx);
+
+            return getCourseWithImageAndDetailRes;
+        } catch (Exception exception) {
             throw new BaseException(DATABASE_ERROR);
         }
     }
