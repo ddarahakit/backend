@@ -15,5 +15,6 @@ public class PostChapterReq {
     private Integer num;
     private String name;
     private Time time;
+    private String detail;
     private Integer course_idx;
 }

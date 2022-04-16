@@ -34,10 +34,14 @@ public class ChapterDao {
     }
 
     public PostChapterRes createChapter(PostChapterReq postChapterReq) {
-        String createChapterQuery = "insert into chapter (num, name, time, course_idx) " +
-                "VALUES (?, ?, ?, ?)";
-        Object[] createChapterParams = new Object[] { postChapterReq.getNum(), postChapterReq.getName(),
-                postChapterReq.getTime(), postChapterReq.getCourse_idx()};
+        String createChapterQuery = "insert into chapter (num, name, time, detail, course_idx) " +
+                "VALUES (?, ?, ?, ?, ?)";
+        Object[] createChapterParams = new Object[] {
+                postChapterReq.getNum(),
+                postChapterReq.getName(),
+                postChapterReq.getTime(),
+                postChapterReq.getDetail(),
+                postChapterReq.getCourse_idx()};
 
         this.jdbcTemplate.update(createChapterQuery, createChapterParams);
 

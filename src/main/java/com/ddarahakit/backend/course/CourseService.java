@@ -7,8 +7,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.io.File;
-import java.io.IOException;
 import java.util.List;
 
 import static com.ddarahakit.backend.config.BaseResponseStatus.*;
@@ -39,33 +37,8 @@ public class CourseService {
         }
     }
 
-    public GetCourseRes getCourse(Integer idx) throws BaseException {
-        if (courseDao.isNotExistedCourse(idx)) {
-            throw new BaseException(RESPONSE_NULL_ERROR_BY_IDX);
-        }
 
-        try {
-            GetCourseRes getCourseRes = courseDao.getCourse(idx);
-
-            return getCourseRes;
-        } catch (Exception exception) {
-            throw new BaseException(DATABASE_ERROR);
-        }
-    }
-
-    public List<GetCourseRes> getCourseList() throws BaseException {
-        try {
-            List<GetCourseRes> getCourseResList = courseDao.getCourseList();
-
-            return getCourseResList;
-        } catch (Exception exception) {
-            System.out.println(exception);
-            throw new BaseException(DATABASE_ERROR);
-        }
-    }
-
-
-    public PostCourseRes createCourseWithImage(PostCourseReq postCourseReq, MultipartFile multipartFile) throws BaseException {
+    public PostCourseRes createCourseWithImage(PostCourseReq postCourseReq, MultipartFile courseimage, MultipartFile coursedetailimage) throws BaseException {
         //이름 중복
         if (courseProvider.isPreExistsCourse(postCourseReq)) {
             throw new BaseException(POST_COURSES_PRE_EXIST_COURSE);
@@ -73,9 +46,11 @@ public class CourseService {
 
         try {
             PostCourseRes postCourseRes = courseDao.createCourse(postCourseReq);
-            String imageUrl = awsS3.upload(multipartFile);
-            PostCourseRes postCourseRes2 = courseDao.createCourseImage(imageUrl, postCourseRes.getIdx());
-            return postCourseRes2;
+            String courseimageUrl = awsS3.upload("course", courseimage);
+            String coursedetailimageUrl = awsS3.upload("coursedetail", coursedetailimage);
+            PostCourseRes postCourseRes2 = courseDao.createCourseImage(courseimageUrl, postCourseRes.getIdx());
+            PostCourseRes postCourseRes3 = courseDao.createCourseDetailImage(coursedetailimageUrl, postCourseRes.getIdx());
+            return postCourseRes3;
         } catch (Exception exception) {
             throw new BaseException(DATABASE_ERROR);
         }
@@ -103,32 +78,6 @@ public class CourseService {
             return getCourseWithImageResList;
         } catch (Exception exception) {
             System.out.println(exception);
-            throw new BaseException(DATABASE_ERROR);
-        }
-    }
-
-
-    public PostCourseDetailRes createCourseDetailWithImage(PostCourseDetailReq postCourseDetailReq, MultipartFile multipartFile) throws BaseException {
-        try {
-            PostCourseDetailRes postCourseDetailRes1 = courseDao.createCourseDetail(postCourseDetailReq);
-            String imageUrl = awsS3.upload(multipartFile);
-            PostCourseDetailRes postCourseDetailRes2 = courseDao.createCourseDetailImage(imageUrl, postCourseDetailRes1.getIdx());
-            return postCourseDetailRes2;
-        } catch (Exception exception) {
-            throw new BaseException(DATABASE_ERROR);
-        }
-    }
-
-    public GetCourseWithImageAndDetailRes getCourseWithImageAndDetail(Integer idx) throws BaseException {
-        if (courseDao.isNotExistedCourse(idx)) {
-            throw new BaseException(RESPONSE_NULL_ERROR_BY_IDX);
-        }
-
-        try {
-            GetCourseWithImageAndDetailRes getCourseWithImageAndDetailRes = courseDao.getCourseWithImageAndDetail(idx);
-
-            return getCourseWithImageAndDetailRes;
-        } catch (Exception exception) {
             throw new BaseException(DATABASE_ERROR);
         }
     }

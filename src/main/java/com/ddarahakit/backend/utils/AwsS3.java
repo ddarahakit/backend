@@ -41,7 +41,7 @@ public class AwsS3 {
     private S3Client client;
 
 
-    public String upload(MultipartFile multipartFile)
+    public String upload(String url,MultipartFile multipartFile)
             throws S3Exception, AwsServiceException, SdkClientException, IOException {
 
         Region regionObject = Region.of(region);
@@ -58,7 +58,7 @@ public class AwsS3 {
         String originalName = multipartFile.getOriginalFilename();
         String fileName = originalName.substring(originalName.lastIndexOf("\\") + 1);
         String uuid = UUID.randomUUID().toString();
-        String folderPath = LocalDate.now().format(DateTimeFormatter.ofPattern("yyyy/MM/dd/"));
+        String folderPath = url + File.separator + LocalDate.now().format(DateTimeFormatter.ofPattern("yyyy/MM/dd/"));
         String saveName = folderPath + File.separator + uuid +"_" + fileName;
 
 
