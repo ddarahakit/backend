@@ -20,6 +20,8 @@
 + 이미지는 용도에 맞는 폴더에 업로드되도록 수정
 + course create할 때 course image와 course detail image 함께 올리게 수정
 
+#### 4월 17일 개발일지
++ 회원가입 및 로그인 구현
 
 
 
