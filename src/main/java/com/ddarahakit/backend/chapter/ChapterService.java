@@ -14,9 +14,7 @@ public class ChapterService {
     @Autowired
     private ChapterDao chapterDao;
 
-
     public PostChapterRes createChapter(PostChapterReq postChapterReq) throws BaseException {
-
         try {
             return chapterDao.createChapter(postChapterReq);
         } catch (Exception exception) {

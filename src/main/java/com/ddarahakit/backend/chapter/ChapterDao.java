@@ -34,8 +34,8 @@ public class ChapterDao {
     }
 
     public PostChapterRes createChapter(PostChapterReq postChapterReq) {
-        String createChapterQuery = "insert into chapter (num, name, time, detail, course_idx) " +
-                "VALUES (?, ?, ?, ?, ?)";
+        System.out.println("test");
+        String createChapterQuery = "INSERT INTO chapter (num, name, time, detail, course_idx) VALUES (?, ?, ?, ?, ?)";
         Object[] createChapterParams = new Object[] {
                 postChapterReq.getNum(),
                 postChapterReq.getName(),
