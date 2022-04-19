@@ -9,5 +9,6 @@ import lombok.Setter;
 @AllArgsConstructor
 public class PostSignupReq {
     private String email;
+    private String nickname;
     private String password;
 }

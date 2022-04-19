@@ -1,5 +1,6 @@
 package com.ddarahakit.backend.utils.jwt;
 
+import com.ddarahakit.backend.user.model.LoginUser;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
@@ -49,6 +50,9 @@ public class JwtTokenUtil implements Serializable {
     //generate token for user
     public String generateToken(UserDetails userDetails) {
         Map<String, Object> claims = new HashMap<>();
+        LoginUser loginUser = (LoginUser) userDetails;
+        claims.put("email", loginUser.getEmail());
+        claims.put("nickname", loginUser.getNickname());
         return doGenerateToken(claims, userDetails.getUsername());
     }
 

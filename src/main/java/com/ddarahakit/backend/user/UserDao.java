@@ -1,6 +1,7 @@
 package com.ddarahakit.backend.user;
 
 import com.ddarahakit.backend.user.model.Authority;
+import com.ddarahakit.backend.user.model.LoginUser;
 import com.ddarahakit.backend.user.model.PostSignupReq;
 import com.ddarahakit.backend.user.model.PostSignupRes;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -43,13 +44,14 @@ public class UserDao {
     }
 
 
-    public User getUserByEmail(String email) {
+    public LoginUser getUserByEmail(String email) {
         String getEmailQuery = "SELECT * FROM user LEFT OUTER JOIN authority on user.email=authority.user_email WHERE email=?";
 
         return this.jdbcTemplate.queryForObject(getEmailQuery
-                , (rs, rowNum) -> new User(
+                , (rs, rowNum) -> new LoginUser(
                         rs.getString("email"),
                         rs.getString("password"),
+                        rs.getString("nickname"),
                         Arrays.asList(new SimpleGrantedAuthority(Authority.values()[rs.getObject("role", int.class)].toString()))
                 ), email);
     }
