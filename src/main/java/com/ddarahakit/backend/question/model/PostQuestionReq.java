@@ -13,5 +13,4 @@ public class PostQuestionReq {
     private String title;
     private String contents;
     private Integer chapter_idx;
-    private String user_email;
 }

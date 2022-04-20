@@ -14,9 +14,17 @@ public class QuestionService {
     @Autowired
     QuestionDao questionDao;
 
-    public PostQuestionRes createQuestion(@RequestBody PostQuestionReq postQuestionReq) throws BaseException {
+    public PostQuestionRes createQuestion(String userEmail, @RequestBody PostQuestionReq postQuestionReq) throws BaseException {
         try {
-            return questionDao.createQuestion(postQuestionReq);
+            return questionDao.createQuestion(userEmail, postQuestionReq);
+        } catch (Exception exception) {
+            throw new BaseException(DATABASE_ERROR);
+        }
+    }
+
+    public PostQuestionRes deleteQuestion(String userEmail, Integer questionIdx) throws BaseException {
+        try {
+            return questionDao.deleteQuestion(userEmail, questionIdx);
         } catch (Exception exception) {
             throw new BaseException(DATABASE_ERROR);
         }

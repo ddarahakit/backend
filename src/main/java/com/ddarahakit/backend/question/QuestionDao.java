@@ -21,14 +21,14 @@ public class QuestionDao {
         this.jdbcTemplate = new JdbcTemplate(dataSource);
     }
 
-    public PostQuestionRes createQuestion(@RequestBody PostQuestionReq postQuestionReq) {
+    public PostQuestionRes createQuestion(String userEmail, @RequestBody PostQuestionReq postQuestionReq) {
         String createQuestionQuery = "insert into question (title, contents, chapter_idx, user_email) " +
                 "VALUES (?, ?, ?, ?)";
         Object[] createQuestionParams = new Object[] {
                 postQuestionReq.getTitle(),
                 postQuestionReq.getContents(),
                 postQuestionReq.getChapter_idx(),
-                postQuestionReq.getUser_email()};
+                userEmail};
 
         this.jdbcTemplate.update(createQuestionQuery, createQuestionParams);
 
@@ -37,6 +37,17 @@ public class QuestionDao {
         Integer lastInsertIdx = this.jdbcTemplate.queryForObject(getLastInsertIdxQuery, Integer.class);
 
         return new PostQuestionRes(lastInsertIdx, 1);
+    }
+
+    public PostQuestionRes deleteQuestion(String userEmail, Integer questionIdx) {
+        String deleteQuestionQuery = "DELETE FROM question WHERE idx=? AND user_email=?";
+        Object[] deleteQuestionParams = new Object[] {
+                questionIdx,
+                userEmail};
+
+
+
+        return new PostQuestionRes(questionIdx, this.jdbcTemplate.update(deleteQuestionQuery, deleteQuestionParams));
     }
 
 }

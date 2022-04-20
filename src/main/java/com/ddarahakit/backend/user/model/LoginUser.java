@@ -10,7 +10,6 @@ import java.util.Collection;
 @Getter
 @Setter
 public class LoginUser extends User {
-    int idx;
     String email;
     String nickname;
 
