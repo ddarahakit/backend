@@ -1,5 +1,7 @@
 package com.ddarahakit.backend.question;
 
+import com.ddarahakit.backend.course.model.GetCourseWithImageRes;
+import com.ddarahakit.backend.question.model.GetQuestionRes;
 import com.ddarahakit.backend.question.model.PostQuestionRes;
 import com.ddarahakit.backend.config.BaseException;
 import com.ddarahakit.backend.config.BaseResponse;
@@ -11,6 +13,7 @@ import org.springframework.stereotype.Repository;
 import org.springframework.web.bind.annotation.RequestBody;
 
 import javax.sql.DataSource;
+import java.util.List;
 
 @Repository
 public class QuestionDao {
@@ -45,9 +48,48 @@ public class QuestionDao {
                 questionIdx,
                 userEmail};
 
-
-
         return new PostQuestionRes(questionIdx, this.jdbcTemplate.update(deleteQuestionQuery, deleteQuestionParams));
     }
 
+    public List<GetQuestionRes> getQuestionList() {
+
+        String getCourseQuery = "SELECT * FROM question";
+
+        return this.jdbcTemplate.query(getCourseQuery
+                , (rs,rowNum) -> new GetQuestionRes(
+                        rs.getInt("idx"),
+                        rs.getString("title"),
+                        rs.getString("contents"),
+                        rs.getString("user_email"),
+                        rs.getTimestamp("create_timestamp"),
+                        rs.getTimestamp("update_timestamp")));
+    }
+
+    public List<GetQuestionRes> getQuestionListByChapter(Integer chapterIdx) {
+
+        String getCourseQuery = "SELECT * FROM question WHERE chapter_idx=?";
+
+        return this.jdbcTemplate.query(getCourseQuery
+                , (rs,rowNum) -> new GetQuestionRes(
+                        rs.getInt("idx"),
+                        rs.getString("title"),
+                        rs.getString("contents"),
+                        rs.getString("user_email"),
+                        rs.getTimestamp("create_timestamp"),
+                        rs.getTimestamp("update_timestamp")), chapterIdx);
+    }
+
+    public List<GetQuestionRes> getQuestionListByUserEmail(String userEmail) {
+
+        String getCourseQuery = "SELECT * FROM question WHERE user_email=?";
+
+        return this.jdbcTemplate.query(getCourseQuery
+                , (rs,rowNum) -> new GetQuestionRes(
+                        rs.getInt("idx"),
+                        rs.getString("title"),
+                        rs.getString("contents"),
+                        rs.getString("user_email"),
+                        rs.getTimestamp("create_timestamp"),
+                        rs.getTimestamp("update_timestamp")), userEmail);
+    }
 }
