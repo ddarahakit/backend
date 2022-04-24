@@ -26,10 +26,12 @@ public class OAuth2AuthenticationSuccessHandler extends SimpleUrlAuthenticationS
 
         Map<String, Object> kakao_account = (Map<String, Object>)oAuth2User.getAttributes().get("kakao_account");
         String email = (String)kakao_account.get("email");
-        Map<String, Object> claims = new HashMap<>();
-        claims.put("email", email);
 
-        String jwt = jwtTokenUtil.doGenerateToken(claims, "kakao");
+        Map<String, Object> properties = (Map<String, Object>) oAuth2User.getAttributes().get("properties");
+        String nickname = (String) properties.get("nickname");
+
+        String jwt = jwtTokenUtil.generateTokenForOauth("kakao", email, nickname);
+
         String url = makeRedirectUrl(jwt);
         System.out.println(url);
         if (response.isCommitted()) {

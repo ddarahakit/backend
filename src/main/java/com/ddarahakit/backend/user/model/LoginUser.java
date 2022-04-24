@@ -14,7 +14,7 @@ public class LoginUser extends User {
     String nickname;
 
     public LoginUser(String username, String password, String nickname, Collection<?
-                extends GrantedAuthority> authorities) {
+            extends GrantedAuthority> authorities) {
         super(username, password, authorities);
         this.email = username;
         this.nickname = nickname;

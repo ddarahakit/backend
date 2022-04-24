@@ -33,9 +33,12 @@ public class UserOauth2Service extends DefaultOAuth2UserService {
 
         Map<String, Object> kakao_account = (Map<String, Object>)attributes.get("kakao_account");
         String email = (String)kakao_account.get("email");
+        Map<String, Object> properties = (Map<String, Object>) attributes.get("properties");
+        String nickname = (String) properties.get("nickname");
+
         // 가입한 적 없음
         if (userDao.checkEmail(email)==0) {
-            userDao.createUserByKakao(email);
+            userDao.createUserByKakao(email, nickname);
         }
 
         return new DefaultOAuth2User(

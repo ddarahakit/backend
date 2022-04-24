@@ -44,14 +44,21 @@ public class UserDao {
         return new PostSignupRes(lastInsertIdx, 1);
     }
 
-    public Integer createUserByKakao(String email) {
-        String createUserQuery = "insert into user (email) VALUES (?)";
+    public Integer createUserByKakao(String email, String nickname) {
+        String createUserQuery = "insert into user (email, password, nickname) VALUES (?, ?, ?)";
 
-        Object[] createUserParams = new Object[] { email }; // 나중에 항목 추가를 위해
+        Object[] createUserParams = new Object[] { email, "kakao", nickname }; // 나중에 항목 추가를 위해
 
         this.jdbcTemplate.update(createUserQuery, createUserParams);
 
         String lastInsertIdQuery = "select last_insert_id()";
+
+        String createAuthorityQuery = "insert into authority values(?, ?)";
+
+        Object[] createAuthorityParams = new Object[]{email, 0};
+
+        this.jdbcTemplate.update(createAuthorityQuery, createAuthorityParams);
+
         return this.jdbcTemplate.queryForObject(lastInsertIdQuery, Integer.class);
     }
 
