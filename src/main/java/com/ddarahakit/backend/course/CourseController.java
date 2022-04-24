@@ -75,6 +75,7 @@ public class CourseController {
 
     @ResponseBody
     @GetMapping("")
+    @CrossOrigin(origins = "http://localhost:3000")
     public BaseResponse<List<GetCourseWithImageRes>> getCourseWithImageList() {
         try {
             List<GetCourseWithImageRes> getCourseWithImageResList = courseService.getCourseWithImageList();

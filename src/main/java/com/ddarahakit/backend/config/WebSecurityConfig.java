@@ -1,7 +1,9 @@
 package com.ddarahakit.backend.config;
 
+import com.ddarahakit.backend.user.UserOauth2Service;
 import com.ddarahakit.backend.utils.jwt.JwtAuthenticationEntryPoint;
 import com.ddarahakit.backend.utils.jwt.JwtRequestFilter;
+import com.ddarahakit.backend.utils.oauth2.OAuth2AuthenticationSuccessHandler;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -28,7 +30,11 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Autowired
     private UserDetailsService jwtUserDetailsService;
+    @Autowired
+    private UserOauth2Service userOauth2Service;
 
+    @Autowired
+    private OAuth2AuthenticationSuccessHandler oAuth2AuthenticationSuccessHandler;
     @Autowired
     private JwtRequestFilter jwtRequestFilter;
 
@@ -58,7 +64,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
         httpSecurity.csrf().disable()
                 // dont authenticate this particular request
                 .authorizeRequests().
-                antMatchers("/chapter/*", "/user/login", "/user/signup").permitAll().
+                antMatchers("/course/**" ,"/chapter/*", "/user/login", "/user/signup").permitAll().
                 antMatchers("/question/*").hasRole("USER").
 
                 // all other requests need to be authenticated
@@ -66,7 +72,13 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 // make sure we use stateless session; session won't be used to
                 // store user's state.
                         exceptionHandling().authenticationEntryPoint(jwtAuthenticationEntryPoint).and().sessionManagement()
-                .sessionCreationPolicy(SessionCreationPolicy.STATELESS);
+                .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+                .and()
+                .oauth2Login()
+                .successHandler(oAuth2AuthenticationSuccessHandler)
+                .userInfoEndpoint()
+                .userService(userOauth2Service);
+
 
         // Add a filter to validate the tokens with every request
         httpSecurity.addFilterBefore(jwtRequestFilter, UsernamePasswordAuthenticationFilter.class);

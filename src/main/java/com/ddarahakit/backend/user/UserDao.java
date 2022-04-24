@@ -11,6 +11,7 @@ import org.springframework.security.core.userdetails.User;
 import org.springframework.stereotype.Repository;
 
 import javax.sql.DataSource;
+import java.math.BigInteger;
 import java.util.Arrays;
 
 @Repository
@@ -43,6 +44,16 @@ public class UserDao {
         return new PostSignupRes(lastInsertIdx, 1);
     }
 
+    public Integer createUserByKakao(String email) {
+        String createUserQuery = "insert into user (email) VALUES (?)";
+
+        Object[] createUserParams = new Object[] { email }; // 나중에 항목 추가를 위해
+
+        this.jdbcTemplate.update(createUserQuery, createUserParams);
+
+        String lastInsertIdQuery = "select last_insert_id()";
+        return this.jdbcTemplate.queryForObject(lastInsertIdQuery, Integer.class);
+    }
 
     public LoginUser getUserByEmail(String email) {
         String getEmailQuery = "SELECT * FROM user LEFT OUTER JOIN authority on user.email=authority.user_email WHERE email=?";
@@ -54,5 +65,13 @@ public class UserDao {
                         rs.getString("nickname"),
                         Arrays.asList(new SimpleGrantedAuthority(Authority.values()[rs.getObject("role", int.class)].toString()))
                 ), email);
+    }
+
+    public int checkEmail(String email) {
+        String checkEmailQuery = "select exists(select email from user where email = ?)";
+        String checkEmailParams = email;
+        return this.jdbcTemplate.queryForObject(checkEmailQuery,
+                int.class,
+                checkEmailParams);
     }
 }
