@@ -1,11 +1,9 @@
 package com.ddarahakit.backend.question;
 
 import com.ddarahakit.backend.course.model.GetCourseWithImageRes;
-import com.ddarahakit.backend.question.model.GetQuestionRes;
-import com.ddarahakit.backend.question.model.PostQuestionRes;
+import com.ddarahakit.backend.question.model.*;
 import com.ddarahakit.backend.config.BaseException;
 import com.ddarahakit.backend.config.BaseResponse;
-import com.ddarahakit.backend.question.model.PostQuestionReq;
 import com.ddarahakit.backend.question.model.PostQuestionRes;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -24,7 +22,7 @@ public class QuestionDao {
         this.jdbcTemplate = new JdbcTemplate(dataSource);
     }
 
-    public PostQuestionRes createQuestion(String userEmail, @RequestBody PostQuestionReq postQuestionReq) {
+    public PostQuestionRes createQuestion(String userEmail, PostQuestionReq postQuestionReq) {
         String createQuestionQuery = "insert into question (title, contents, chapter_idx, user_email) " +
                 "VALUES (?, ?, ?, ?)";
         Object[] createQuestionParams = new Object[] {
@@ -32,6 +30,23 @@ public class QuestionDao {
                 postQuestionReq.getContents(),
                 postQuestionReq.getChapter_idx(),
                 userEmail};
+
+        this.jdbcTemplate.update(createQuestionQuery, createQuestionParams);
+
+        String getLastInsertIdxQuery = "select last_insert_id()";
+
+        Integer lastInsertIdx = this.jdbcTemplate.queryForObject(getLastInsertIdxQuery, Integer.class);
+
+        return new PostQuestionRes(lastInsertIdx, 1);
+    }
+
+    public PostQuestionRes updateQuestion(String userEmail, Integer questionIdx, PutQuestionReq putQuestionReq) {
+        String createQuestionQuery = "UPDATE question SET title=?, contents=? WHERE user_email=? AND idx=?";
+        Object[] createQuestionParams = new Object[] {
+                putQuestionReq.getTitle(),
+                putQuestionReq.getContents(),
+                userEmail,
+                questionIdx};
 
         this.jdbcTemplate.update(createQuestionQuery, createQuestionParams);
 
@@ -50,10 +65,23 @@ public class QuestionDao {
 
         return new PostQuestionRes(questionIdx, this.jdbcTemplate.update(deleteQuestionQuery, deleteQuestionParams));
     }
+    public GetQuestionRes getQuestion(Integer questionIdx) {
+
+        String getCourseQuery = "SELECT * FROM question WHERE idx=? AND status=1";
+
+        return this.jdbcTemplate.queryForObject(getCourseQuery
+                , (rs,rowNum) -> new GetQuestionRes(
+                        rs.getInt("idx"),
+                        rs.getString("title"),
+                        rs.getString("contents"),
+                        rs.getString("user_email"),
+                        rs.getTimestamp("create_timestamp"),
+                        rs.getTimestamp("update_timestamp")),questionIdx);
+    }
 
     public List<GetQuestionRes> getQuestionList() {
 
-        String getCourseQuery = "SELECT * FROM question";
+        String getCourseQuery = "SELECT * FROM question AND status=1";
 
         return this.jdbcTemplate.query(getCourseQuery
                 , (rs,rowNum) -> new GetQuestionRes(
@@ -67,7 +95,7 @@ public class QuestionDao {
 
     public List<GetQuestionRes> getQuestionListByChapter(Integer chapterIdx) {
 
-        String getCourseQuery = "SELECT * FROM question WHERE chapter_idx=?";
+        String getCourseQuery = "SELECT * FROM question WHERE chapter_idx=? AND status=1";
 
         return this.jdbcTemplate.query(getCourseQuery
                 , (rs,rowNum) -> new GetQuestionRes(
@@ -81,7 +109,7 @@ public class QuestionDao {
 
     public List<GetQuestionRes> getQuestionListByUserEmail(String userEmail) {
 
-        String getCourseQuery = "SELECT * FROM question WHERE user_email=?";
+        String getCourseQuery = "SELECT * FROM question WHERE user_email=? AND status=1";
 
         return this.jdbcTemplate.query(getCourseQuery
                 , (rs,rowNum) -> new GetQuestionRes(

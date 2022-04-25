@@ -7,6 +7,7 @@ import com.ddarahakit.backend.course.model.GetCourseWithImageRes;
 import com.ddarahakit.backend.question.model.GetQuestionRes;
 import com.ddarahakit.backend.question.model.PostQuestionReq;
 import com.ddarahakit.backend.question.model.PostQuestionRes;
+import com.ddarahakit.backend.question.model.PutQuestionReq;
 import com.ddarahakit.backend.user.model.LoginUser;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -23,6 +24,8 @@ public class QuestionController {
     @Autowired
     QuestionService questionService;
 
+
+    // 질문 생성
     @ResponseBody
     @PostMapping("/create")
     public BaseResponse<PostQuestionRes> createQuestion(@AuthenticationPrincipal LoginUser loginUser, @RequestBody PostQuestionReq postQuestionReq) {
@@ -34,6 +37,33 @@ public class QuestionController {
         }
     }
 
+    // 질문 조회
+    @ResponseBody
+    @GetMapping("/{questionIdx}")
+    public BaseResponse<GetQuestionRes> getQuestion(@PathVariable Integer questionIdx) {
+        try {
+            System.out.println("==================================="+questionIdx);
+            GetQuestionRes getQuestionRes = questionService.getQuestion(questionIdx);
+            return new BaseResponse<>(getQuestionRes);
+
+        } catch (BaseException exception) {
+            return new BaseResponse<>(exception.getStatus());
+        }
+    }
+
+    // 질문 수정 PUT
+    @ResponseBody
+    @PutMapping("/update/{questionIdx}")
+    public BaseResponse<PostQuestionRes> updateQuestion(@AuthenticationPrincipal LoginUser loginUser, @PathVariable Integer questionIdx, @RequestBody PutQuestionReq putQuestionReq) {
+        try {
+            PostQuestionRes postQuestionRes = questionService.updateQuestion(loginUser.getEmail(), questionIdx, putQuestionReq);
+            return new BaseResponse<>(postQuestionRes);
+        } catch (BaseException exception) {
+            return new BaseResponse<>(exception.getStatus());
+        }
+    }
+
+    // 질문 삭제
     @ResponseBody
     @DeleteMapping("/delete/{questionIdx}")
     public BaseResponse<PostQuestionRes> deleteQuestion(@AuthenticationPrincipal LoginUser loginUser, @PathVariable Integer questionIdx) {
@@ -50,6 +80,7 @@ public class QuestionController {
         }
     }
 
+    // 질문 목록
     @ResponseBody
     @GetMapping("")
     public BaseResponse<List<GetQuestionRes>> getQuestionList() {
@@ -63,9 +94,10 @@ public class QuestionController {
         }
     }
 
+    // 질문 목록(챕터별)
     @ResponseBody
-    @GetMapping("/{chapterIdx}")
-    public BaseResponse<List<GetQuestionRes>> getQuestionListByUserEmail(@PathVariable Integer chapterIdx) {
+    @GetMapping("/chapter/{chapterIdx}")
+    public BaseResponse<List<GetQuestionRes>> getQuestionListByChapter(@PathVariable Integer chapterIdx) {
         try {
 
             List<GetQuestionRes> getQuestionResList = questionService.getQuestionListByChapter(chapterIdx);
@@ -76,6 +108,7 @@ public class QuestionController {
         }
     }
 
+    // 질문 목록(사용자별)
     @ResponseBody
     @GetMapping("/user")
     public BaseResponse<List<GetQuestionRes>> getQuestionListByUserEmail(@AuthenticationPrincipal LoginUser loginUser) {
