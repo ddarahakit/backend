@@ -43,7 +43,7 @@ public class QuestionDao {
     }
 
     public PostQuestionRes deleteQuestion(String userEmail, Integer questionIdx) {
-        String deleteQuestionQuery = "DELETE FROM question WHERE idx=? AND user_email=?";
+        String deleteQuestionQuery = "UPDATE question SET status=0 WHERE idx=? AND user_email=?";
         Object[] deleteQuestionParams = new Object[] {
                 questionIdx,
                 userEmail};
