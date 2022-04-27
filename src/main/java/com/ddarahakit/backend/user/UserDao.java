@@ -26,9 +26,9 @@ public class UserDao {
 
     public PostSignupRes createUser(PostSignupReq postSignupReq) {
 
-        String createUserQuery = "insert into user (email, password ) VALUES (?, ?)";
+        String createUserQuery = "insert into user (email, password, nickname ) VALUES (?, ?, ?)";
 
-        Object[] createUserParams = new Object[]{postSignupReq.getEmail(), postSignupReq.getPassword()};
+        Object[] createUserParams = new Object[]{postSignupReq.getEmail(), postSignupReq.getPassword(), postSignupReq.getNickname()};
 
         this.jdbcTemplate.update(createUserQuery, createUserParams);
 
@@ -63,7 +63,7 @@ public class UserDao {
     }
 
     public LoginUser getUserByEmail(String email) {
-        String getEmailQuery = "SELECT * FROM user LEFT OUTER JOIN authority on user.email=authority.user_email WHERE email=?";
+        String getEmailQuery = "SELECT * FROM user LEFT OUTER JOIN authority on user.email=authority.user_email WHERE email=? AND enabled=1";
 
         return this.jdbcTemplate.queryForObject(getEmailQuery
                 , (rs, rowNum) -> new LoginUser(
@@ -74,11 +74,11 @@ public class UserDao {
                 ), email);
     }
 
-    public int checkEmail(String email) {
+    public Boolean checkEmail(String email) {
         String checkEmailQuery = "select exists(select email from user where email = ?)";
         String checkEmailParams = email;
         return this.jdbcTemplate.queryForObject(checkEmailQuery,
-                int.class,
+                Boolean.class,
                 checkEmailParams);
     }
 }

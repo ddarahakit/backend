@@ -17,7 +17,7 @@ import static com.ddarahakit.backend.config.BaseResponseStatus.DATABASE_ERROR;
 @Service
 public class QuestionService {
     @Autowired
-    QuestionDao questionDao;
+    private QuestionDao questionDao;
 
     public PostQuestionRes createQuestion(String userEmail, PostQuestionReq postQuestionReq) throws BaseException {
         try {

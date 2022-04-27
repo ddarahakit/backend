@@ -1,12 +1,8 @@
 package com.ddarahakit.backend.user;
 
 
-import com.ddarahakit.backend.config.BaseException;
 import com.ddarahakit.backend.config.BaseResponse;
-import com.ddarahakit.backend.user.model.PostLoginReq;
-import com.ddarahakit.backend.user.model.PostLoginRes;
-import com.ddarahakit.backend.user.model.PostSignupReq;
-import com.ddarahakit.backend.user.model.PostSignupRes;
+import com.ddarahakit.backend.user.model.*;
 import com.ddarahakit.backend.utils.jwt.JwtTokenUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -16,6 +12,8 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.UUID;
 
 @RestController
 @RequestMapping("/user")
@@ -30,14 +28,24 @@ public class UserController {
     @Autowired
     private UserService userService;
 
+    @Autowired
+    private EmailCertService emailCertService;
 
 
     @ResponseBody
     @PostMapping("/signup")
     public BaseResponse<PostSignupRes> signup(@RequestBody PostSignupReq postSignupReq) throws Exception {
-        PostSignupRes postSignupRes = userService.createUser(postSignupReq);
-
+        String token = UUID.randomUUID().toString();
+        PostSignupRes postSignupRes = userService.createUser(token, postSignupReq);
+        emailCertService.createEmailConfirmationToken(token,postSignupReq.getEmail());
         return new BaseResponse<>(postSignupRes);
+    }
+
+    @ResponseBody
+    @GetMapping("/confirm")
+    public BaseResponse<GetEmailCertRes> signupConfirm(GetEmailCertReq getEmailCertReq) throws Exception {
+        GetEmailCertRes getEmailCertRes = emailCertService.signupConfirm(getEmailCertReq);
+        return new BaseResponse<>(getEmailCertRes);
     }
 
     @ResponseBody
