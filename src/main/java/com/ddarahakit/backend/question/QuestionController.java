@@ -3,7 +3,6 @@ package com.ddarahakit.backend.question;
 
 import com.ddarahakit.backend.config.BaseException;
 import com.ddarahakit.backend.config.BaseResponse;
-import com.ddarahakit.backend.course.model.GetCourseWithImageRes;
 import com.ddarahakit.backend.question.model.GetQuestionRes;
 import com.ddarahakit.backend.question.model.PostQuestionReq;
 import com.ddarahakit.backend.question.model.PostQuestionRes;
@@ -15,7 +14,6 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
-import static com.ddarahakit.backend.config.BaseResponseStatus.POST_COURSES_INVALID_IMAGE;
 import static com.ddarahakit.backend.config.BaseResponseStatus.RESPONSE_NULL_ERROR;
 
 @RestController

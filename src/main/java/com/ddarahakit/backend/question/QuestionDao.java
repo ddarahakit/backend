@@ -1,14 +1,10 @@
 package com.ddarahakit.backend.question;
 
-import com.ddarahakit.backend.course.model.GetCourseWithImageRes;
 import com.ddarahakit.backend.question.model.*;
-import com.ddarahakit.backend.config.BaseException;
-import com.ddarahakit.backend.config.BaseResponse;
 import com.ddarahakit.backend.question.model.PostQuestionRes;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
-import org.springframework.web.bind.annotation.RequestBody;
 
 import javax.sql.DataSource;
 import java.util.List;

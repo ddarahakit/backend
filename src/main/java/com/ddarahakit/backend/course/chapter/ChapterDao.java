@@ -1,7 +1,7 @@
-package com.ddarahakit.backend.chapter;
+package com.ddarahakit.backend.course.chapter;
 
-import com.ddarahakit.backend.chapter.model.PostChapterReq;
-import com.ddarahakit.backend.chapter.model.PostChapterRes;
+import com.ddarahakit.backend.course.chapter.model.PostChapterReq;
+import com.ddarahakit.backend.course.chapter.model.PostChapterRes;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
@@ -34,13 +34,10 @@ public class ChapterDao {
     }
 
     public PostChapterRes createChapter(PostChapterReq postChapterReq) {
-        System.out.println("test");
-        String createChapterQuery = "INSERT INTO chapter (num, name, time, detail, course_idx) VALUES (?, ?, ?, ?, ?)";
+        String createChapterQuery = "INSERT INTO chapter (num, name, course_idx) VALUES (?, ?, ?)";
         Object[] createChapterParams = new Object[] {
                 postChapterReq.getNum(),
                 postChapterReq.getName(),
-                postChapterReq.getTime(),
-                postChapterReq.getDetail(),
                 postChapterReq.getCourse_idx()};
 
         this.jdbcTemplate.update(createChapterQuery, createChapterParams);

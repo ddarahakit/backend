@@ -10,16 +10,15 @@ import java.sql.Timestamp;
 @Getter
 @Setter
 @AllArgsConstructor
-public class GetCourseWithImageRes {
+public class GetCourseWithAll {
     private Integer idx;
     private String name;
     private Integer price;
     private String description;
     private String detail;
     private Integer discount;
-    private Integer category_idx;
-    private String course_imageurl;
-    private String coursedetail_imageurl;
-    private Timestamp create_timestamp;
-    private Timestamp update_timestamp;
+    private String title;
+    private String chapter_lesson;
+    private String chapter_time;
+    private String imageurl;
 }

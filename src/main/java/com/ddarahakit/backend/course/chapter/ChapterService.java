@@ -1,7 +1,7 @@
-package com.ddarahakit.backend.chapter;
+package com.ddarahakit.backend.course.chapter;
 
-import com.ddarahakit.backend.chapter.model.PostChapterReq;
-import com.ddarahakit.backend.chapter.model.PostChapterRes;
+import com.ddarahakit.backend.course.chapter.model.PostChapterReq;
+import com.ddarahakit.backend.course.chapter.model.PostChapterRes;
 import com.ddarahakit.backend.config.BaseException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;

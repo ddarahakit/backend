@@ -1,11 +1,7 @@
 package com.ddarahakit.backend.user;
 
-import com.ddarahakit.backend.question.model.PostQuestionRes;
-import com.ddarahakit.backend.question.model.PutQuestionReq;
 import com.ddarahakit.backend.user.model.GetEmailCertReq;
 import com.ddarahakit.backend.user.model.GetEmailCertRes;
-import com.ddarahakit.backend.user.model.PostSignupReq;
-import com.ddarahakit.backend.user.model.PostSignupRes;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;

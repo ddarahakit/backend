@@ -56,7 +56,7 @@ public class CourseController {
 
     @ResponseBody
     @GetMapping("/{idx}")
-    public BaseResponse<GetCourseWithImageRes> getCourseWithImage(@PathVariable Integer idx) {
+    public BaseResponse<GetCourseWithAll> getCourseWithAll(@PathVariable Integer idx) {
         if (idx == null) {
             return new BaseResponse<>(GET_COURSES_EMPTY_IDX);
         }
@@ -65,9 +65,9 @@ public class CourseController {
         }
 
         try {
-            GetCourseWithImageRes getCourseWithImageRes = courseService.getCourseWithImage(idx);
+            GetCourseWithAll getCourseWithAll = courseService.getCourseWithAll(idx);
 
-            return new BaseResponse<>(getCourseWithImageRes);
+            return new BaseResponse<>(getCourseWithAll);
         } catch (BaseException exception) {
             return new BaseResponse<>(exception.getStatus());
         }
@@ -76,11 +76,11 @@ public class CourseController {
     @ResponseBody
     @GetMapping("")
     @CrossOrigin(origins = "http://localhost:3000")
-    public BaseResponse<List<GetCourseWithImageRes>> getCourseWithImageList() {
+    public BaseResponse<List<GetCourseWithAll>> getCourseWithAllList() {
         try {
-            List<GetCourseWithImageRes> getCourseWithImageResList = courseService.getCourseWithImageList();
+            List<GetCourseWithAll> getCourseWithAllList = courseService.getCourseWithAllList();
 
-            return new BaseResponse<>(getCourseWithImageResList);
+            return new BaseResponse<>(getCourseWithAllList);
         } catch (BaseException exception) {
             return new BaseResponse<>(exception.getStatus());
         }

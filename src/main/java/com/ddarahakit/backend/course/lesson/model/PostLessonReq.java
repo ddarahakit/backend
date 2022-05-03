@@ -1,4 +1,4 @@
-package com.ddarahakit.backend.chapter.model;
+package com.ddarahakit.backend.course.lesson.model;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -11,10 +11,10 @@ import java.sql.Time;
 @Setter
 @AllArgsConstructor
 @ToString
-public class PostChapterReq {
+public class PostLessonReq {
     private Integer num;
-    private String name;
+    private String title;
     private Time time;
     private String detail;
-    private Integer course_idx;
+    private Integer chapter_idx;
 }
