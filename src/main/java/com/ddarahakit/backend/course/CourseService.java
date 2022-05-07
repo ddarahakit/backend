@@ -56,26 +56,26 @@ public class CourseService {
         }
     }
 
-    public GetCourseWithAll getCourseWithAll(Integer idx) throws BaseException {
+    public GetCourseDetail getCourseWithAll(Integer idx) throws BaseException {
         if (courseDao.isNotExistedCourse(idx)) {
             throw new BaseException(RESPONSE_NULL_ERROR_BY_IDX);
         }
 
         try {
-            GetCourseWithAll getCourseWithAll = courseDao.getCourseWithAll(idx);
+            GetCourseDetail getCourseDetail = courseDao.getCourseWithAll(idx);
 
-            return getCourseWithAll;
+            return getCourseDetail;
         } catch (Exception exception) {
             throw new BaseException(DATABASE_ERROR);
         }
     }
 
 
-    public List<GetCourseWithAll> getCourseWithAllList() throws BaseException {
+    public List<GetCourseList> getCourseWithAllList() throws BaseException {
         try {
-            List<GetCourseWithAll> getCourseWithAllList = courseDao.getCourseWithAllList();
+            List<GetCourseList> getCourseLists = courseDao.getCourseWithAllList();
 
-            return getCourseWithAllList;
+            return getCourseLists;
         } catch (Exception exception) {
             System.out.println(exception);
             throw new BaseException(DATABASE_ERROR);

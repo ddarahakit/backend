@@ -45,7 +45,7 @@ public class UserDao {
     }
 
     public Integer createUserByKakao(String email, String nickname) {
-        String createUserQuery = "insert into user (email, password, nickname) VALUES (?, ?, ?)";
+        String createUserQuery = "insert into user (email, password, nickname, enabled) VALUES (?, ?, ?, 1)";
 
         Object[] createUserParams = new Object[] { email, "kakao", nickname }; // 나중에 항목 추가를 위해
 

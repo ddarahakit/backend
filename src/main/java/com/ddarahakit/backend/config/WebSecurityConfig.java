@@ -7,6 +7,7 @@ import com.ddarahakit.backend.utils.oauth2.OAuth2AuthenticationSuccessHandler;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
@@ -17,6 +18,7 @@ import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.web.authentication.AuthenticationFailureHandler;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.web.cors.CorsConfiguration;
 
@@ -24,6 +26,7 @@ import org.springframework.web.cors.CorsConfiguration;
 @EnableWebSecurity
 @EnableGlobalMethodSecurity(prePostEnabled = true)
 public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
+
 
     @Autowired
     private JwtAuthenticationEntryPoint jwtAuthenticationEntryPoint;
@@ -63,16 +66,15 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
         httpSecurity.cors().configurationSource(request -> new CorsConfiguration().applyPermitDefaultValues());
         // We don't need CSRF for this example
         httpSecurity.csrf().disable()
-                // dont authenticate this particular request
-                .authorizeRequests().
-                antMatchers("/course/**" ,"/chapter/*", "/user/login", "/user/confirm", "/user/signup", "/**").permitAll().
-                antMatchers("/question/**").hasRole("USER").
-
-                // all other requests need to be authenticated
-                        anyRequest().authenticated().and().
-                // make sure we use stateless session; session won't be used to
-                // store user's state.
-                        exceptionHandling().authenticationEntryPoint(jwtAuthenticationEntryPoint).and().sessionManagement()
+                .authorizeRequests()
+                .antMatchers(HttpMethod.OPTIONS).permitAll()
+                .antMatchers("/**", "/login/**", "/oauth2/**").permitAll()
+                .antMatchers("/question/**").hasRole("USER")
+                .anyRequest().authenticated()
+                .and()
+                .exceptionHandling().authenticationEntryPoint(jwtAuthenticationEntryPoint)
+                .and()
+                .sessionManagement()
                 .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 .and()
                 .oauth2Login()
@@ -80,8 +82,6 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .userInfoEndpoint()
                 .userService(userOauth2Service);
 
-
-        // Add a filter to validate the tokens with every request
         httpSecurity.addFilterBefore(jwtRequestFilter, UsernamePasswordAuthenticationFilter.class);
     }
 }

@@ -55,7 +55,13 @@ public enum BaseResponseStatus {
      * 4000 : Database, Server 오류
      */
     DATABASE_ERROR(false, 4000, "데이터베이스 연결에 실패하였습니다."),
-    SERVER_ERROR(false, 4001, "서버와의 연결에 실패하였습니다.");
+    SERVER_ERROR(false, 4001, "서버와의 연결에 실패하였습니다."),
+
+    /**
+     * 9000 : Database, Server 오류
+     */
+    PAYMENT_ERROR(false, 9000, "결제에 실패하였습니다."),
+    PAYMENT_PRICE_ERROR(false, 9001, "결제 금액 오류, 결제를 취소하였습니다.");
 
 
     private final boolean isSuccess;

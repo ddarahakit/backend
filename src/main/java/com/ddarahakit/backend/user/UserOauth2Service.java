@@ -37,7 +37,7 @@ public class UserOauth2Service extends DefaultOAuth2UserService {
         String nickname = (String) properties.get("nickname");
 
         // 가입한 적 없음
-        if (userDao.checkEmail(email)) {
+        if (userDao.checkEmail(email)==false) {
             userDao.createUserByKakao(email, nickname);
         }
 
