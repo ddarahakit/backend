@@ -1,9 +1,9 @@
 package com.ddarahakit.backend.course.lesson;
 
+import com.ddarahakit.backend.course.lesson.model.*;
 import com.ddarahakit.backend.course.lesson.model.PostLessonReq;
 import com.ddarahakit.backend.course.lesson.model.PostLessonRes;
-import com.ddarahakit.backend.course.lesson.model.PostLessonReq;
-import com.ddarahakit.backend.course.lesson.model.PostLessonRes;
+import com.ddarahakit.backend.course.model.GetCourseDetail;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
@@ -51,5 +51,18 @@ public class LessonDao {
         Integer lastInsertIdx = this.jdbcTemplate.queryForObject(getLastInsertIdxQuery, Integer.class);
 
         return new PostLessonRes(lastInsertIdx, 1);
+    }
+
+
+    public GetLessonRes getLessonByIdx(Integer idx) {
+        String getLessonQuery = "SELECT * FROM lesson WHERE idx=?";
+
+        return this.jdbcTemplate.queryForObject(getLessonQuery
+                , (rs,rowNum) -> new GetLessonRes(
+                        rs.getInt("idx"),
+                        rs.getInt("num"),
+                        rs.getString("title"),
+                        rs.getTime("time"),
+                        rs.getString("detail")), idx);
     }
 }

@@ -61,9 +61,6 @@ public class AwsS3 {
         String folderPath = url + File.separator + LocalDate.now().format(DateTimeFormatter.ofPattern("yyyy/MM/dd/"));
         String saveName = folderPath + File.separator + uuid +"_" + fileName;
 
-
-
-        //요청 생성
         PutObjectRequest putObjectRequest = PutObjectRequest.builder()
                 .bucket(bucket)
                 .key(saveName)
@@ -71,19 +68,12 @@ public class AwsS3 {
                 .contentType("image/*")
                 .build();
 
-        System.out.println("중기 - 요청생성");
-
         RequestBody requestBody = RequestBody.fromInputStream(
                 multipartFile.getInputStream(), multipartFile.getSize()
         );
 
-        System.out.println("말기 - 바디에서 값 가져오기");
-
         client.putObject(putObjectRequest, requestBody);
 
-
-
-        System.out.println("끝 - 요청 보내기 성공");
 
         return "https://ddarahakit-s3.s3.ap-northeast-2.amazonaws.com/"+saveName;
     }

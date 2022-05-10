@@ -1,5 +1,7 @@
 package com.ddarahakit.backend.user;
 
+import com.ddarahakit.backend.question.model.PostQuestionRes;
+import com.ddarahakit.backend.question.model.PutQuestionReq;
 import com.ddarahakit.backend.user.model.Authority;
 import com.ddarahakit.backend.user.model.LoginUser;
 import com.ddarahakit.backend.user.model.PostSignupReq;
@@ -63,9 +65,9 @@ public class UserDao {
     }
 
     public LoginUser getUserByEmail(String email) {
-        String getEmailQuery = "SELECT * FROM user LEFT OUTER JOIN authority on user.email=authority.user_email WHERE email=? AND enabled=1";
+        String getUserByEmailQuery = "SELECT * FROM `user` LEFT OUTER JOIN authority on `user`.email=authority.user_email WHERE email=? AND enabled=1";
 
-        return this.jdbcTemplate.queryForObject(getEmailQuery
+        return this.jdbcTemplate.queryForObject(getUserByEmailQuery
                 , (rs, rowNum) -> new LoginUser(
                         rs.getString("email"),
                         rs.getString("password"),
@@ -80,5 +82,49 @@ public class UserDao {
         return this.jdbcTemplate.queryForObject(checkEmailQuery,
                 Boolean.class,
                 checkEmailParams);
+    }
+
+    public void createRefreshToken(String email, String refreshToken) {
+
+        String createRefreshTokenQuery = "insert into `refreshtoken` (user_email, token ) VALUES (?, ?)";
+
+        Object[] createRefreshTokenParams = new Object[]{email, refreshToken};
+
+        this.jdbcTemplate.update(createRefreshTokenQuery, createRefreshTokenParams);
+    }
+
+    public String getRefreshToken(String email) {
+
+        String getRefreshTokenQuery = "SELECT token FROM `refreshtoken` WHERE user_email=? ORDER BY create_timestamp LIMIT 1";
+
+
+        return this.jdbcTemplate.queryForObject(getRefreshTokenQuery
+                , (rs, rowNum) -> rs.getString("token"), email);
+    }
+
+    public void updateRefreshToken(String email, String newRefreshToken) {
+
+        String updateRefreshTokenQuery = "UPDATE refreshtoken SET token=? WHERE user_email=?";
+
+        Object[] updateRefreshTokenParams = new Object[]{newRefreshToken, email};
+
+        this.jdbcTemplate.update(updateRefreshTokenQuery, updateRefreshTokenParams);
+    }
+
+    public PostQuestionRes updateQuestion(String userEmail, Integer questionIdx, PutQuestionReq putQuestionReq) {
+        String createQuestionQuery = "UPDATE question SET title=?, contents=? WHERE user_email=? AND idx=?";
+        Object[] createQuestionParams = new Object[] {
+                putQuestionReq.getTitle(),
+                putQuestionReq.getContents(),
+                userEmail,
+                questionIdx};
+
+        this.jdbcTemplate.update(createQuestionQuery, createQuestionParams);
+
+        String getLastInsertIdxQuery = "select last_insert_id()";
+
+        Integer lastInsertIdx = this.jdbcTemplate.queryForObject(getLastInsertIdxQuery, Integer.class);
+
+        return new PostQuestionRes(lastInsertIdx, 1);
     }
 }

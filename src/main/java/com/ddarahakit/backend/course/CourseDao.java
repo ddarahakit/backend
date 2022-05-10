@@ -83,8 +83,7 @@ public class CourseDao {
 
 
     public GetCourseDetail getCourseWithAll(Integer idx) {
-        String getCourseQuery = "SELECT co_idx, co_name, co_price, co_description, co_detail, co_discount, ci_imageurl, ca_title, group_concat(ch_lesson order by ch_num separator '^') as ch_lesson, group_concat(ch_time order by ch_num separator '^') as ch_time FROM (SELECT *, concat(ch_name,'_',group_concat(lesson.title)) as ch_lesson, group_concat(lesson.time) as ch_time FROM (SELECT co_idx, co_name, co_price, co_description, co_detail, co_discount, ci_imageurl, ca_title, ch_name, ch_num, lesson.title, lesson.time,lesson.chapter_idx FROM (SELECT course.idx as co_idx, course.name as co_name, course.price as co_price, course.description as co_description, course.detail as co_detail, course.discount co_discount, courseimage.imageurl ci_imageurl, chapter.idx as ch_idx, chapter.name as ch_name, chapter.num as ch_num, category.title as ca_title FROM course LEFT OUTER JOIN chapter ON course.idx=chapter.course_idx LEFT OUTER JOIN courseimage ON course.idx=courseimage.course_idx LEFT OUTER JOIN category ON course.category_idx=category.idx WHERE course.idx=?) AS chapter LEFT OUTER JOIN lesson on chapter.ch_idx=lesson.chapter_idx) as lesson GROUP BY lesson.chapter_idx) as chapter_lesson GROUP BY co_idx";
-
+        String getCourseQuery = "SELECT co_idx, co_name, co_price, co_description, co_detail, co_discount, ci_imageurl, ca_title, group_concat(ch_idx order by ch_num separator '^') as ch_idx, group_concat(ch_lesson order by ch_num separator '^') as ch_lesson, group_concat(ch_time order by ch_num separator '^') as ch_time FROM (SELECT *, group_concat(lesson.idx) as ch_idx, concat(ch_name,'_',group_concat(lesson.title)) as ch_lesson, group_concat(lesson.time) as ch_time FROM (SELECT co_idx, co_name, co_price, co_description, co_detail, co_discount, ci_imageurl, ca_title, ch_name, ch_num, lesson.idx, lesson.title, lesson.time, lesson.chapter_idx FROM (SELECT course.idx as co_idx, course.name as co_name, course.price as co_price, course.description as co_description, course.detail as co_detail, course.discount co_discount, courseimage.imageurl ci_imageurl, chapter.idx as ch_idx, chapter.name as ch_name, chapter.num as ch_num, category.title as ca_title FROM course LEFT OUTER JOIN chapter ON course.idx=chapter.course_idx LEFT OUTER JOIN courseimage ON course.idx=courseimage.course_idx LEFT OUTER JOIN category ON course.category_idx=category.idx WHERE course.idx=?) AS chapter LEFT OUTER JOIN lesson on chapter.ch_idx=lesson.chapter_idx) as lesson GROUP BY lesson.chapter_idx) as chapter_lesson GROUP BY co_idx";
 
         return this.jdbcTemplate.queryForObject(getCourseQuery
                 , (rs,rowNum) -> new GetCourseDetail(
@@ -95,6 +94,7 @@ public class CourseDao {
                         rs.getString("co_detail"),
                         rs.getInt("co_discount"),
                         rs.getString("ca_title"),
+                        rs.getString("ch_idx"),
                         rs.getString("ch_lesson"),
                         rs.getString("ch_time"),
                         rs.getString("ci_imageurl")), idx);

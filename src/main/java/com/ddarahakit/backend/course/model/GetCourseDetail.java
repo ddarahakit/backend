@@ -18,6 +18,7 @@ public class GetCourseDetail {
     private String detail;
     private Integer discount;
     private String title;
+    private String chapter_idx;
     private String chapter_lesson;
     private String chapter_time;
     private String imageurl;

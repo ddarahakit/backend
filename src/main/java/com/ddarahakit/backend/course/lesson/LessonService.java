@@ -4,6 +4,7 @@ import com.ddarahakit.backend.config.BaseException;
 import com.ddarahakit.backend.course.chapter.ChapterDao;
 import com.ddarahakit.backend.course.chapter.model.PostChapterReq;
 import com.ddarahakit.backend.course.chapter.model.PostChapterRes;
+import com.ddarahakit.backend.course.lesson.model.GetLessonRes;
 import com.ddarahakit.backend.course.lesson.model.PostLessonReq;
 import com.ddarahakit.backend.course.lesson.model.PostLessonRes;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,6 +21,14 @@ public class LessonService {
     public PostLessonRes createLesson(PostLessonReq postLessonReq) throws BaseException {
         try {
             return lessonDao.createLesson(postLessonReq);
+        } catch (Exception exception) {
+            throw new BaseException(DATABASE_ERROR);
+        }
+    }
+
+    public GetLessonRes getLessonByIdx(Integer idx) throws BaseException {
+        try {
+            return lessonDao.getLessonByIdx(idx);
         } catch (Exception exception) {
             throw new BaseException(DATABASE_ERROR);
         }

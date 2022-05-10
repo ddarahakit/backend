@@ -56,8 +56,9 @@ public class UserController {
         User user = (User)authentication.getPrincipal();
 
         final String token = jwtTokenUtil.generateToken(user);
-
-        return new BaseResponse<>(new PostLoginRes(token));
+        final String refreshToken = jwtTokenUtil.generateRefreshToken();
+        userService.createRefreshToken(user.getUsername(), refreshToken);
+        return new BaseResponse<>(new PostLoginRes(token, refreshToken));
     }
 
     private Authentication authenticate(String email, String password) throws Exception {
@@ -68,5 +69,14 @@ public class UserController {
         } catch (BadCredentialsException e) {
             throw new Exception("INVALID_CREDENTIALS", e);
         }
+    }
+
+    @ResponseBody
+    @PostMapping("/refresh")
+    public BaseResponse<PostLoginRes> refresh(@RequestHeader(value="UserEmail") String userEmail,
+                                              @RequestHeader(value="AccessToken") String accessToken,
+                                              @RequestHeader(value="RefreshToken") String refreshToken) {
+        System.out.println("userEmail : " + userEmail);
+        return userService.refreshToken(userEmail, accessToken, refreshToken);
     }
 }

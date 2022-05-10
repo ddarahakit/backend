@@ -2,6 +2,7 @@ package com.ddarahakit.backend.utils.jwt;
 
 import com.ddarahakit.backend.user.model.LoginUser;
 import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import org.springframework.beans.factory.annotation.Value;
@@ -17,13 +18,17 @@ import java.util.function.Function;
 @Component
 public class JwtTokenUtil implements Serializable {
     private static final long serialVersionUID = -2550185165626007488L;
-    public static final long JWT_TOKEN_VALIDITY = 5 * 60 * 60;
+    //public static final long JWT_ACCESS_VALIDITY = 1 * 60 * 30;
+    public static final long JWT_ACCESS_VALIDITY = 1 * 30 * 1;
+    public static final long JWT_REFRESH_VALIDITY = 48 * 60 * 60;
     @Value("${jwt.secret}")
     private String secret;
 
     //retrieve username from jwt token
-    public String getUsernameFromToken(String token) {
+    public String getUsernameFromToken(String token) throws ExpiredJwtException {
+
         return getClaimFromToken(token, Claims::getSubject);
+
     }
 
     //retrieve expiration date from jwt token
@@ -36,15 +41,19 @@ public class JwtTokenUtil implements Serializable {
         return claimsResolver.apply(claims);
     }
 
-    //for retrieveing any information from token we will need the secret key
     private Claims getAllClaimsFromToken(String token) {
         return Jwts.parser().setSigningKey(secret).parseClaimsJws(token).getBody();
     }
 
     //check if the token has expired
-    private Boolean isTokenExpired(String token) {
-        final Date expiration = getExpirationDateFromToken(token);
-        return expiration.before(new Date());
+    public Boolean isTokenExpired(String token) {
+        try {
+            final Date expiration = getExpirationDateFromToken(token);
+            return expiration.before(new Date());
+        } catch (ExpiredJwtException e) {
+            return true;
+        }
+
     }
 
     //generate token for user
@@ -56,23 +65,18 @@ public class JwtTokenUtil implements Serializable {
         return doGenerateToken(claims, userDetails.getUsername());
     }
 
-    public String generateTokenForOauth(String social, String email, String nickname) {
-        Map<String, Object> claims = new HashMap<>();
-        claims.put("social", social);
-        claims.put("nickname", nickname);
-        return doGenerateToken(claims, email);
+    public String generateRefreshToken() {
+        return Jwts.builder().setIssuedAt(new Date(System.currentTimeMillis()))
+                .setExpiration(new Date(System.currentTimeMillis() + JWT_REFRESH_VALIDITY * 1000))
+                //.setExpiration(new Date(System.currentTimeMillis() + 5 * 1000))
+                .signWith(SignatureAlgorithm.HS512, secret).compact();
     }
 
-    //while creating the token -
-//1. Define  claims of the token, like Issuer, Expiration, Subject, and the ID
-//2. Sign the JWT using the HS512 algorithm and secret key.
-//3. According to JWS Compact Serialization(https://tools.ietf.org/html/draft-ietf-jose-json-web-signature-41#section-3.1)
-//   compaction of the JWT to a URL-safe string
     private String doGenerateToken(Map<String, Object> claims, String subject) {
         return Jwts.builder().setClaims(claims).setSubject(subject).setIssuedAt(new Date(System.currentTimeMillis()))
-            .setExpiration(new Date(System.currentTimeMillis() + JWT_TOKEN_VALIDITY * 1000))
-            //.setExpiration(new Date(System.currentTimeMillis() + 5 * 1000))
-            .signWith(SignatureAlgorithm.HS512, secret).compact();
+                .setExpiration(new Date(System.currentTimeMillis() + JWT_ACCESS_VALIDITY * 1000))
+                //.setExpiration(new Date(System.currentTimeMillis() + 5 * 1000))
+                .signWith(SignatureAlgorithm.HS512, secret).compact();
     }
 
     //validate token

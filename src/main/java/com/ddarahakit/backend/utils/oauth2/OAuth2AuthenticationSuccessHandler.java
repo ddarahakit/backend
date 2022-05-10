@@ -1,5 +1,8 @@
 package com.ddarahakit.backend.utils.oauth2;
 
+import com.ddarahakit.backend.user.UserProvider;
+import com.ddarahakit.backend.user.UserService;
+import com.ddarahakit.backend.user.model.LoginUser;
 import com.ddarahakit.backend.utils.jwt.JwtTokenUtil;
 import java.io.IOException;
 import java.util.HashMap;
@@ -18,6 +21,8 @@ import org.springframework.web.util.UriComponentsBuilder;
 public class OAuth2AuthenticationSuccessHandler extends SimpleUrlAuthenticationSuccessHandler {
     @Autowired
     JwtTokenUtil jwtTokenUtil;
+    @Autowired
+    UserProvider userProvider;
 
     @Override
     public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response,
@@ -26,14 +31,11 @@ public class OAuth2AuthenticationSuccessHandler extends SimpleUrlAuthenticationS
 
         Map<String, Object> kakao_account = (Map<String, Object>)oAuth2User.getAttributes().get("kakao_account");
         String email = (String)kakao_account.get("email");
+        LoginUser loginUser = userProvider.getUserByEmail(email);
 
-        Map<String, Object> properties = (Map<String, Object>) oAuth2User.getAttributes().get("properties");
-        String nickname = (String) properties.get("nickname");
-
-        String jwt = jwtTokenUtil.generateTokenForOauth("kakao", email, nickname);
+        String jwt = jwtTokenUtil.generateToken(loginUser);
 
         String url = makeRedirectUrl(jwt);
-        System.out.println(url);
         if (response.isCommitted()) {
             logger.debug("응답이 이미 커밋된 상태입니다. " + url + "로 리다이렉트하도록 바꿀 수 없습니다.");
             return;
